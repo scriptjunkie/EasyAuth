@@ -1,17 +1,17 @@
-<h1>NoKnowledgeAuth - The Easier, Secure Cloud</h1>
+<h1>EasyAuth - The Easier, Secure Cloud</h1>
 
 <h2>Overview</h2>
 
-<p>NoKnowledgeAuth (NKA) is a proof-of-concept authentication system based on client SSL certificates that doesn&rsquo;t require users to remember any secrets.</p>
+<p>EasyAuth (EZA) is a proof-of-concept authentication system based on client SSL certificates that doesn&rsquo;t require users to remember any secrets.</p>
 
 <ul>
 <li>It&rsquo;s much easier on your users than the typical password and secret question systems. Ordinary people just can&rsquo;t create and remember random passwords for every site.</li>
 <li>This system stops attackers who can find out or guess security questions or guess or brute-force passwords. These are the same kind of attacks that have worked again and again against many celebrities, website owners, and ordinary people.</li>
-<li>Because NKA uses modern crypto, malicious websites with fake login pages that can steal passwords won&rsquo;t work. You can re-use the same certificate on all websites and unlike re-used passwords, even if one site got hacked or was malicious itself, you&rsquo;ll still be secure on the other sites.</li>
+<li>Because EZA uses modern crypto, malicious websites with fake login pages that can steal passwords won&rsquo;t work. You can re-use the same certificate on all websites and unlike re-used passwords, even if one site got hacked or was malicious itself, you&rsquo;ll still be secure on the other sites.</li>
 <li>This system even stops advanced attackers who can &ldquo;man-in-the-middle&rdquo; your connection and strip the encryption of other sites with fraudulent certificates. Hundreds of organizations can issue certificates and many have issued bad certificates before. This system doesn&rsquo;t rely on trusting any of those organizations, since it verifies your actual key!</li>
 <li>This system supports two factor (or 3 factor or 4 factor or&hellip;) authentication that&rsquo;s stronger than even other multi-factor authentication systems.</li>
-<li>NKA has stronger account reset processes, using multiple devices and/or a printed or mailed reset code, not like the typical insecure account reset questions whose answers are all too easy to guess or find out.</li>
-<li>NKA even supports smart cards for users that have them, for true multi-factor authentication and the highest level of security.</li>
+<li>EZA has stronger account reset processes, using multiple devices and/or a printed or mailed reset code, not like the typical insecure account reset questions whose answers are all too easy to guess or find out.</li>
+<li>EZA even supports smart cards for users that have them, for true multi-factor authentication and the highest level of security.</li>
 </ul>
 
 
@@ -48,8 +48,8 @@ sudo service apache2 restart
 
 <h3>Requesting and obtaining a client&rsquo;s certificate</h3>
 
-<p>NKA requests any client certificates by using the Apache <em>SSLVerifyClient optional_no_ca</em> directive and makes certificate data accessible to the web app with the <em>SSLOptions +StdEnvVars +ExportCertData</em> directive. Both may be set in .htaccess files unless prohibited by main apache configuration. Using optional_no_ca allows clients to use smart cards and certificates from elsewhere that are convenient for the client, but it&rsquo;s important to note that the certificate subject name cannot be taken at face value, since anybody could have issued that certificate. Instead, you&rsquo;ll have to validate the key (what NKA does) or the certificate thumbprint and keep track of which keys go with which accounts. This is a plain public/private key approach instead of a public key infrastructure approach, which in my opinion saves us a lot of complexity and is more secure.</p>
+<p>EZA requests any client certificates by using the Apache <em>SSLVerifyClient optional_no_ca</em> directive and makes certificate data accessible to the web app with the <em>SSLOptions +StdEnvVars +ExportCertData</em> directive. Both may be set in .htaccess files unless prohibited by main apache configuration. Using optional_no_ca allows clients to use smart cards and certificates from elsewhere that are convenient for the client, but it&rsquo;s important to note that the certificate subject name cannot be taken at face value, since anybody could have issued that certificate. Instead, you&rsquo;ll have to validate the key (what EZA does) or the certificate thumbprint and keep track of which keys go with which accounts. This is a plain public/private key approach instead of a public key infrastructure approach, which in my opinion saves us a lot of complexity and is more secure.</p>
 
 <h3>Elliptic Curve Cryptography</h3>
 
-<p>NKA uses elliptic curve crypto where possible, for high performance and security; specifically, for the CA key (which is NOT security sensitive as it is not trusted) and in Firefox, for the client-generated certificates. I believe ECC is probably more secure than a 1024 or 2048-bit RSA key, but if you are concerned about the NSA knowing about secret weaknesses into ECC crypto, just delete the PHP lines around line 20 of getacert.php.</p>
+<p>EZA uses elliptic curve crypto where possible, for high performance and security; specifically, for the CA key (which is NOT security sensitive as it is not trusted) and in Firefox, for the client-generated certificates. I believe ECC is probably more secure than a 1024 or 2048-bit RSA key, but if you are concerned about the NSA knowing about secret weaknesses into ECC crypto, just delete the PHP lines around line 20 of getacert.php.</p>

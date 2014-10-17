@@ -12,13 +12,13 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 	setupCA();
 	echo '<h1>Congratulations!</h1>
-<p class="text">Your NoKnowledgeAuth base system is set up.</p>';
+<p class="text">Your EasyAuth base system is set up.</p>';
 	if(getUser(GetCertId()) == NULL){
 		echo '<p class="text"><a href="register">Go to registration</a> to complete setup.</p>';
 	}
 }else{
 ?>
-<h1>NoKnowledgeAuth setup</h1>
+<h1>EasyAuth setup</h1>
 <p class="text">To set up this authentication system, you first need a mysql database. You will then either need to manually create a config.php or run this installer with the database host and root password. You must then register; as the first user you will be granted admin permissions.
 <h2>Setup with mysql root DB account:</h2>
 <form method="post" name="setupform" action="setup">

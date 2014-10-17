@@ -39,12 +39,12 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 	}
 ?>
 <h1>Congratulations!</h1>
-<p class="text">Your NoKnowledgeAuth database and database user have been wiped.</p>
+<p class="text">Your EasyAuth database and database user have been wiped.</p>
 <a href="index">Go to home page</a>
 <?php
 }else{
 ?>
-<h1>NoKnowledgeAuth destruct</h1>
+<h1>EasyAuth destruct</h1>
 <p class="text">To wipe this system, you need to run this destructor with the database host and root password.</p>
 <form method="post" name="setupform" action="wipe">
 <table>
