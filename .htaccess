@@ -1,0 +1,7 @@
+SSLOptions +StdEnvVars +ExportCertData
+SSLVerifyClient optional_no_ca
+## hide .php extension
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*) $1\.php 
