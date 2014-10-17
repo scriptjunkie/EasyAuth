@@ -1,4 +1,9 @@
 <?php
+//This page is included in case you want to uninstall EZA
+include('db.php');
+if(!isset($curusr) or !isAdmin($curusr)){
+	die("must be an admin to view this page.");
+}
 $title = "Destructor";
 include('header.php');
 function rrmdir($dir) {

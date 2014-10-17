@@ -25,6 +25,7 @@ function getDBConnection(){
 //Sets up the database initially given root creds
 //Creates a user and DB and relevant tables
 function setupDB($host, $rootpass, $adminemail, $adminapproval){
+	global $authdb;
 	if($rootpass !== NULL){//Root setup method 
 		if(file_exists("config.php")){
 			die('Database has already been set up!');
@@ -66,8 +67,10 @@ function setupDB($host, $rootpass, $adminemail, $adminapproval){
 		fwrite($confout, "define('ADMINAPPROVAL', " . $adminapproval . ");\n"); //clamped to true or false
 		fclose($confout);
 	}
-	global $authdb;
 	getDBConnection(); //Now let's load it up and see if it works
+	if($rootpass === NULL && count(getUsers('', 1)) > 0){
+		die("Database is already set up!");
+	}
 	//And make the tables
 	if(!$authdb->query("CREATE TABLE IF NOT EXISTS users(username VARCHAR(40) NOT NULL PRIMARY KEY, admin BOOLEAN NOT NULL DEFAULT FALSE, active BOOLEAN NOT NULL DEFAULT TRUE, address VARCHAR(100) NOT NULL, city VARCHAR(40) NOT NULL, state VARCHAR(40) NOT NULL, postcode VARCHAR(20) NOT NULL, country VARCHAR(20) NOT NULL, resetcode CHAR(40) NOT NULL, minfactors INTEGER NOT NULL DEFAULT 1)")){
 		die("Creating users table failed: " . $authdb->error);
