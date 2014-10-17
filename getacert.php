@@ -16,14 +16,7 @@ include('header.php');
 	<p>Hit the Generate button and then install the certificate it gives you in your browser.</p>
 	<p>All modern browsers (not Internet Explorer) should be compatible.</p>
 	<form method="post">
-		<keygen name="pubkey" challenge="randomchars" <?php
-//If only all browsers supported elliptic curves. So far Chrome doesn't, but Firefox does.
-require_once('browser_detection.php');
-$bname = browser_detection('browser_name');
-if(strpos($bname, 'irefox') !== FALSE || strpos($bname, 'gecko') !== FALSE){
-	echo 'keytype="EC"';
-}
-?>>
+		<keygen name="pubkey" challenge="randomchars">
 		The username I want: <input type="text" name="username" value="" required pattern="[a-zA-Z0-9]+">
 		<input type="submit" value="Generate">
 	</form>
