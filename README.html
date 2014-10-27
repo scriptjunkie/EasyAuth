@@ -22,15 +22,17 @@
 
 <p>If you have a MySQL database and an Apache HTTPS server with PHP that supports .htaccess files, just extract the noknowledgeauth directory, visit the setup.php script in your browser, and enter your database creds.</p>
 
-<p>The below commands have been verified to work on a fresh vanilla Ubuntu server LAMP install:</p>
+<p>The below commands have been verified to work on a fresh vanilla Ubuntu server install when run as root:</p>
 
-<pre><code>sudo a2enmod ssl
-sudo a2enmod rewrite
+<pre><code>apt-get install git lamp-server^
+a2enmod ssl
+a2enmod rewrite
 ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/
-sudo sed -ibak 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf 
-cd /var/www/html
-wget -O - https://scriptjunkie.us/files/noknowledgeauth.tgz | tar -xvz
-sudo service apache2 restart
+sed -ibak 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+rm /var/www/html/index.html
+git clone https://github.com/scriptjunkie/EasyAuth.git /var/www/html/
+chown -R www-data:www-data /var/www/html/
+service apache2 restart
 </code></pre>
 
 <p>If you have the root mysql password, you can enter that into the setup.php page in your browser. This will create a database and a limited user with a randomly generated password, saving the configuration in the config.php file it generates.</p>
