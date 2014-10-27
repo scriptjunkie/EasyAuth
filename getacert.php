@@ -9,6 +9,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	issueCert($_POST['username'], $_POST['pubkey']);
 	exit;
 }
+$title = 'Certificate Generation';
 include('header.php');
 ?>
 	<h1>Certificate Generation</h1>
