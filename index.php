@@ -3,6 +3,10 @@ require_once('db.php');
 $title = 'Home';
 include('header.php');
 if($certid === NULL){
+	if(isset($_SERVER["SSL_CLIENT_CERT"])){
+		echo('<strong><p>CERTIFICATE INFORMATION</p></strong>');
+		echo($_SERVER["SSL_CLIENT_CERT"]);
+	}
 ?>
 <h1>No Knowledge Authentication</h1>
 <h2>The Easier Secure Cloud</h2>

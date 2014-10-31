@@ -5,16 +5,18 @@ require_once('ca.php');
 $title = 'Setup';
 include('header.php');
 if($_SERVER['REQUEST_METHOD']==='POST'){
-	if(isset($_POST['rootpass'])){
-		setupDB($_POST['dbhost'], $_POST['rootpass'], $_POST['adminemail'], $_POST['adminapproval']);
-	}else{
-		setupDB(NULL, NULL, NULL, NULL);
-	}
-	setupCA();
-	echo '<h1>Congratulations!</h1>
-<p class="text">Your EasyAuth base system is set up.</p>';
-	if(getUser(GetCertId()) == NULL){
-		echo '<p class="text"><a href="register">Go to registration</a> to complete setup.</p>';
+	if(!file_exists('config.php')){
+		if(isset($_POST['rootpass'])){
+			setupDB($_POST['dbhost'], $_POST['rootpass'], $_POST['adminemail'], $_POST['adminapproval']);
+		}else{
+			setupDB(NULL, NULL, NULL, NULL);
+		}
+		setupCA();
+		echo '<h1>Congratulations!</h1>
+	<p class="text">Your EasyAuth base system is set up.</p>';
+		if(getUser(GetCertId()) == NULL){
+			echo '<p class="text"><a href="register">Go to registration</a> to complete setup.</p>';
+		}
 	}
 }else{
 ?>

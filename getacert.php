@@ -6,7 +6,7 @@ if($certid != NULL){
 	die("You are already using a certificate! ".$_SERVER["SSL_CLIENT_S_DN_CN"] . ' <a href="register">Go to registration.</a>');
 }
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	issueCert($_POST['username'], $_POST['pubkey']);
+	issueCert($_POST['username'], $_POST['key']);
 	exit;
 }
 $title = 'Certificate Generation';
@@ -17,9 +17,10 @@ include('header.php');
 	<p>Hit the Generate button and then install the certificate it gives you in your browser.</p>
 	<p>All modern browsers (not Internet Explorer) should be compatible.</p>
 	<form method="post">
-		<keygen name="pubkey" challenge="randomchars">
+		<keygen name="key">
 		The username I want: <input type="text" name="username" value="" required pattern="[a-zA-Z0-9]+">
-		<input type="submit" value="Generate">
+		<input type="submit" name="pubkey" value="Generate">
+
 	</form>
 	<strong>Wait a minute, then <a href="register">register for an account</a> to see your new cert in action!</strong>
 	<h2>Internet Explorer</h2>

@@ -1,5 +1,9 @@
 <?php
 header("X-Frame-Options: DENY"); // Clickjacking protection; included in all files
+//redirect to HTTPS
+if(!isset($_SERVER["HTTPS"]) || !$_SERVER["HTTPS"]){
+	header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -8,6 +12,11 @@ header("X-Frame-Options: DENY"); // Clickjacking protection; included in all fil
 if($title){
 	echo ' - ' . $title;
 }?></title>
+<script src="keygen/keygen.js"></script>
+<script type="module">
+ import { OpenSSL } from './openssl.js/dist/browser.openssl.js';
+ keygenJS(OpenSSL);
+</script>
 	<meta http-equiv="X-FRAME-OPTIONS" content="DENY">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -23,6 +32,17 @@ if(isset($certid) && getUser($certid) != NULL && !isTemporary($certid)){
 	echo ' | <a href="profile">Manage profile</a>';
 	if(isset($curusr) and isAdmin($curusr)){
 		echo ' | <a href="admin">Admin Panel</a>';
+	}
+}
+else
+{
+	if(isset($certid)){
+		echo('<strong><p>CERTIFICATE ID</p></strong>');
+		echo($certid);
+	}
+	else
+	{
+		echo('<strong><p>NO CERTIFICATE ID</p></strong>');
 	}
 }
 ?>

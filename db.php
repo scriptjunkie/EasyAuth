@@ -114,17 +114,42 @@ function getUsers($searchterm, $limit = 50, $strict = false){
 }
 //Gets the cert ID
 function getCertId(){
+	$key = '';
 	if(!isset($_SERVER["SSL_CLIENT_CERT"])){
+		error_log("getCertId: no SSL Cert passed", 0);
 		return NULL;
 	}
-	$keyres = openssl_get_publickey($_SERVER["SSL_CLIENT_CERT"]);
-	if($keyres === FALSE){
+	$key = $_SERVER["SSL_CLIENT_CERT"];
+	if(strlen($key) == 0)
+	{
+		error_log("getCertId: cert length 0", 0);
 		return NULL;
 	}
-	$key = openssl_pkey_get_details($keyres)['key'];
-	if(!$key){
-		return NULL;
-	}
+	if(isset($_SERVER['SERVER_SOFTWARE']) && $_SERVER['SERVER_SOFTWARE'] != ''){
+		//Split it out.
+		error_log("getCertId: SERVER_SOFTWARE was: " . $_SERVER['SERVER_SOFTWARE'], 0);
+		if(strpos($_SERVER['SERVER_SOFTWARE'],'nginx') !== false)
+		{
+			return sha1($key);
+		}
+		else
+		{
+			$string = str_replace(array("\r", "\n","\t"), '', $_SERVER["SSL_CLIENT_CERT"]);
+			$keyres = openssl_get_publickey($string);
+			if($keyres === FALSE){
+				error_log("getCertId: no public key retrieved", 0);
+				error_log("getCertId: cert is as follows", 0);
+				error_log($_SERVER["SSL_CLIENT_CERT"], 0);
+				error_log($string,0);
+				return NULL;
+			}
+			$key = openssl_pkey_get_details($keyres)['key'];
+			if(!$key){
+				error_log("getCertId: no hash key retrieved", 0);
+				return NULL;
+			}	
+		}
+    }
 	return sha1($key);
 }
 //Decides if a device is a temporary device or not, returning expiration date if so
@@ -404,7 +429,7 @@ function associateKey($username, $certid, $temporary = false){
 	}
 }
 //Puts in a request to associate a key with a user.
-function requestKeyAdd($user, $currentcertid, $certid, $temporary){
+function requestKeyAdd($user, $currentcertid, $certid, $temporary=""){
 	global $authdb;
 	//First see if this is a brand new request
     if(!certExists($currentcertid)){
@@ -511,7 +536,8 @@ function addUser($username, $address, $city, $state, $postcode, $country){
 	}
 	//Only the sha1 of the reset code is stored. 
 	//This ensures a DB dump contains no easily used credentials.
-	$stmt->bind_param("sssssss", $username, $address, $city, $state, $postcode, $country, sha1($resetcode));
+	$sha1reset = sha1($resetcode);
+	$stmt->bind_param("sssssss", $username, $address, $city, $state, $postcode, $country, $sha1reset);
 	if(!$stmt->execute()){
 		die("Could not add user: ".$authdb->error);
 	}
@@ -781,7 +807,8 @@ function newReset($user){
 	if($updatestmt == false){
 		die("Could not prepare reset code update statement: ".$authdb->error);
 	}
-	$updatestmt->bind_param("ss", sha1($newresetcode), $user);
+	$sha1reset = sha1($newresetcode);
+	$updatestmt->bind_param("ss", $sha1reset, $user);
 	if(!$updatestmt->execute()){
 		die("Could not update reset code: ".$authdb->error);
 	}
