@@ -1,5 +1,9 @@
 <?php
 header("X-Frame-Options: DENY"); // Clickjacking protection; included in all files
+//redirect to HTTPS
+if(!isset($_SERVER["HTTPS"]) || !$_SERVER["HTTPS"]){
+	header("Location: https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+}
 ?>
 <!DOCTYPE html>
 <html>
