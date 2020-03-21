@@ -12,11 +12,14 @@ if(!isset($_SERVER["HTTPS"]) || !$_SERVER["HTTPS"]){
 if($title){
 	echo ' - ' . $title;
 }?></title>
+<<<<<<< HEAD
 <script src="keygen/keygen.js"></script>
 <script type="module">
  import { OpenSSL } from './openssl.js/dist/browser.openssl.js';
  keygenJS(OpenSSL);
 </script>
+=======
+>>>>>>> 0637b7522ff8a22b761a6a2438d93d8d604d9e2d
 	<meta http-equiv="X-FRAME-OPTIONS" content="DENY">
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link rel="stylesheet" type="text/css" href="style.css">
