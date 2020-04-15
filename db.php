@@ -136,12 +136,12 @@ function getCertId(){
 		}
 		else
 		{
-			$string = str_replace(array("\r", "\n","\t"), '', $_SERVER["SSL_CLIENT_CERT"]);
-			$keyres = openssl_get_publickey($string);
+			$keyres = openssl_get_publickey($_SERVER["SSL_CLIENT_CERT"]);
 			if($keyres === FALSE){
 				error_log("getCertId: no public key retrieved", 0);
 				error_log("getCertId: cert is as follows", 0);
 				error_log($_SERVER["SSL_CLIENT_CERT"], 0);
+				$string = str_replace(array("\r", "\n","\t"), '', $_SERVER["SSL_CLIENT_CERT"]);
 				error_log($string,0);
 				return NULL;
 			}
