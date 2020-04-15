@@ -30,5 +30,10 @@ include('header.php');
 	<li>In the powershell window that appears, type <strong><code>New-SelfSignedCertificate -CertStoreLocation Cert:\CurrentUser\My -DnsName me</code></strong> and hit enter.</li>
 	</ul>
 	<p>Then close and re-open your browser and come back to this site.</p>
+<script src="keygen/keygen.js"></script>
+<script type="module">
+ import { OpenSSL } from './openssl.js/dist/browser.openssl.js';
+ keygenJS(OpenSSL);
+</script>
 <?php
 include('footer.php');
