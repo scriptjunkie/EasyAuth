@@ -1,0 +1,6 @@
+[submodule "openssl.js"]
+	path = openssl.js
+	url = https://github.com/DigitalArsenal/openssl.js.git
+[submodule "keygen"]
+	path = keygen
+	url = https://github.com/CyberShadow/keygen.js.git

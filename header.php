@@ -29,6 +29,17 @@ if(isset($certid) && getUser($certid) != NULL && !isTemporary($certid)){
 		echo ' | <a href="admin">Admin Panel</a>';
 	}
 }
+else
+{
+	if(isset($certid)){
+		echo('<strong><p>CERTIFICATE ID</p></strong>');
+		echo($certid);
+	}
+	else
+	{
+		echo('<strong><p>NO CERTIFICATE ID</p></strong>');
+	}
+}
 ?>
 </p></div> 
 </div>

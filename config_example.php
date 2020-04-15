@@ -4,6 +4,8 @@
 define('DBHOST', 'localhost');
 define('DBUSER', 'authuser');
 define('DBPASS', '+PmYF7sVCA7htiVYnskL');
+define('DBPORT', 3306);
 define('DBNAME', 'authdb');
+define('DBSOCKET', NULL);
 define('ADMINEMAIL', 'scriptjunkie@scriptjunkie.us');
 define('ADMINAPPROVAL', true);

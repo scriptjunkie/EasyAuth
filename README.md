@@ -44,3 +44,10 @@ To see how to generate and issue certificates, just check out the ca.php file an
 
 ### Requesting and obtaining a client's certificate
 EZA requests any client certificates by using the Apache *SSLVerifyClient optional_no_ca* directive and makes certificate data accessible to the web app with the *SSLOptions +StdEnvVars +ExportCertData* directive. Both may be set in .htaccess files unless prohibited by main apache configuration. Using optional_no_ca allows clients to use smart cards and certificates from elsewhere that are convenient for the client, but it's important to note that the certificate subject name cannot be taken at face value, since anybody could have issued that certificate. Instead, you'll have to validate the key (what EZA does) or the certificate thumbprint and keep track of which keys go with which accounts. This is a plain public/private key approach instead of a public key infrastructure approach, which in my opinion saves us a lot of complexity and is more secure.
+
+# Troubleshooting
+
+## HTTP 403 errors
+These can happen when your web server uses TLS 1.3, which does not support renegotiation. You need to configure it to prompt for a cert on any new connection, not wait until a request is made. That means adding a `SSLVerifyClient optional_no_ca` line into your Apache VHost/site configuration, where your other SSL parameters are set.
+
+If you get an error such as `undefined function openssl_get_publickey` you need to install your distribution's php-openssl package.

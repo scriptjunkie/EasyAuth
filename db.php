@@ -16,7 +16,7 @@ function getDBConnection(){
 	}
 	require_once('config.php');
 	global $authdb;
-	$authdb = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+	$authdb = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT, DBSOCKET);
 	$GLOBALS['authdb'] = $authdb;
 	if($authdb->connect_error){
 		die("Could not log in to database! Check whether your database is running and whether config.php is correct.");
@@ -63,12 +63,14 @@ function setupDB($host, $rootpass, $adminemail, $adminapproval){
 		fwrite($confout, "define('DBUSER', '" . addslashes($newuser) . "');\n"); //Not like this could ever be injected anyway, but addslashes is good practice
 		fwrite($confout, "define('DBPASS', '" . addslashes($newpass) . "');\n");
 		fwrite($confout, "define('DBNAME', '" . addslashes($dbname) . "');\n");
+		fwrite($confout, "define('DBPORT', 3306);\n");
+		fwrite($confout, "define('DBSOCKET', NULL);\n");
 		fwrite($confout, "define('ADMINEMAIL', '" . addslashes($adminemail) . "');\n");
 		fwrite($confout, "define('ADMINAPPROVAL', " . $adminapproval . ");\n"); //clamped to true or false
 		fclose($confout);
 	}
 	getDBConnection(); //Now let's load it up and see if it works
-	if($rootpass === NULL && count(getUsers('', 1)) > 0){
+	if($rootpass === NULL && $authdb->query("SELECT * FROM users")->num_rows > 0){
 		die("Database is already set up!");
 	}
 	//And make the tables
@@ -115,17 +117,15 @@ function getUsers($searchterm, $limit = 50, $strict = false){
 //Gets the cert ID
 function getCertId(){
 	if(!isset($_SERVER["SSL_CLIENT_CERT"])){
+		error_log("getCertId: no SSL Cert passed", 0);
 		return NULL;
 	}
-	$keyres = openssl_get_publickey($_SERVER["SSL_CLIENT_CERT"]);
-	if($keyres === FALSE){
+	if(strlen($_SERVER["SSL_CLIENT_CERT"]) == 0)
+	{
+		error_log("getCertId: cert length 0", 0);
 		return NULL;
 	}
-	$key = openssl_pkey_get_details($keyres)['key'];
-	if(!$key){
-		return NULL;
-	}
-	return sha1($key);
+	return sha1($_SERVER["SSL_CLIENT_CERT"]);
 }
 //Decides if a device is a temporary device or not, returning expiration date if so
 function isTemporary($certid){
@@ -404,7 +404,7 @@ function associateKey($username, $certid, $temporary = false){
 	}
 }
 //Puts in a request to associate a key with a user.
-function requestKeyAdd($user, $currentcertid, $certid, $temporary){
+function requestKeyAdd($user, $currentcertid, $certid, $temporary=""){
 	global $authdb;
 	//First see if this is a brand new request
     if(!certExists($currentcertid)){
@@ -511,7 +511,8 @@ function addUser($username, $address, $city, $state, $postcode, $country){
 	}
 	//Only the sha1 of the reset code is stored. 
 	//This ensures a DB dump contains no easily used credentials.
-	$stmt->bind_param("sssssss", $username, $address, $city, $state, $postcode, $country, sha1($resetcode));
+	$sha1reset = sha1($resetcode);
+	$stmt->bind_param("sssssss", $username, $address, $city, $state, $postcode, $country, $sha1reset);
 	if(!$stmt->execute()){
 		die("Could not add user: ".$authdb->error);
 	}
@@ -781,7 +782,8 @@ function newReset($user){
 	if($updatestmt == false){
 		die("Could not prepare reset code update statement: ".$authdb->error);
 	}
-	$updatestmt->bind_param("ss", sha1($newresetcode), $user);
+	$sha1reset = sha1($newresetcode);
+	$updatestmt->bind_param("ss", $sha1reset, $user);
 	if(!$updatestmt->execute()){
 		die("Could not update reset code: ".$authdb->error);
 	}
