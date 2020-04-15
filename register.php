@@ -25,6 +25,19 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST'){ //No form submission
 <?php
 	if($certid === NULL){
 ?>
+<script>
+async function certprompt(){
+	for(let i = 0; i < 10; i++){
+		let resp = await fetch('requestcert'); //should close existing connections then request a cert again. Doesn't always work.
+		let rtext = await resp.text();
+		if(rtext.startsWith('1')){
+			location.reload();
+			break;
+		}
+	}
+}
+certprompt();
+</script>
 <p class="text">To sign up, you need to first get a certificate. You can do that <a href="getacert">on this page</a>.</p>
 <p class="text">Then visit this page again selecting your certificate when prompted. If you already got a certificate but are still seeing this message, try closing and re-opening your browser.</p>
 <?php
