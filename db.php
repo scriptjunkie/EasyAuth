@@ -16,7 +16,7 @@ function getDBConnection(){
 	}
 	require_once('config.php');
 	global $authdb;
-	$authdb = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME);
+	$authdb = new mysqli(DBHOST, DBUSER, DBPASS, DBNAME, DBPORT, DBSOCKET);
 	$GLOBALS['authdb'] = $authdb;
 	if($authdb->connect_error){
 		die("Could not log in to database! Check whether your database is running and whether config.php is correct.");
@@ -63,12 +63,14 @@ function setupDB($host, $rootpass, $adminemail, $adminapproval){
 		fwrite($confout, "define('DBUSER', '" . addslashes($newuser) . "');\n"); //Not like this could ever be injected anyway, but addslashes is good practice
 		fwrite($confout, "define('DBPASS', '" . addslashes($newpass) . "');\n");
 		fwrite($confout, "define('DBNAME', '" . addslashes($dbname) . "');\n");
+		fwrite($confout, "define('DBPORT', 3306);\n");
+		fwrite($confout, "define('DBSOCKET', NULL);\n");
 		fwrite($confout, "define('ADMINEMAIL', '" . addslashes($adminemail) . "');\n");
 		fwrite($confout, "define('ADMINAPPROVAL', " . $adminapproval . ");\n"); //clamped to true or false
 		fclose($confout);
 	}
 	getDBConnection(); //Now let's load it up and see if it works
-	if($rootpass === NULL && count(getUsers('', 1)) > 0){
+	if($rootpass === NULL && $authdb->query("SELECT * FROM users")->num_rows > 0){
 		die("Database is already set up!");
 	}
 	//And make the tables

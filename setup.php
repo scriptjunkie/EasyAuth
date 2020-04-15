@@ -17,6 +17,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 		if(getUser(GetCertId()) == NULL){
 			echo '<p class="text"><a href="register">Go to registration</a> to complete setup.</p>';
 		}
+	}else{
+		setupDB(NULL, NULL, NULL, NULL);
 	}
 }else{
 ?>
