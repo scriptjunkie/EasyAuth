@@ -116,43 +116,16 @@ function getUsers($searchterm, $limit = 50, $strict = false){
 }
 //Gets the cert ID
 function getCertId(){
-	$key = '';
 	if(!isset($_SERVER["SSL_CLIENT_CERT"])){
 		error_log("getCertId: no SSL Cert passed", 0);
 		return NULL;
 	}
-	$key = $_SERVER["SSL_CLIENT_CERT"];
-	if(strlen($key) == 0)
+	if(strlen($_SERVER["SSL_CLIENT_CERT"]) == 0)
 	{
 		error_log("getCertId: cert length 0", 0);
 		return NULL;
 	}
-	if(isset($_SERVER['SERVER_SOFTWARE']) && $_SERVER['SERVER_SOFTWARE'] != ''){
-		//Split it out.
-		error_log("getCertId: SERVER_SOFTWARE was: " . $_SERVER['SERVER_SOFTWARE'], 0);
-		if(strpos($_SERVER['SERVER_SOFTWARE'],'nginx') !== false)
-		{
-			return sha1($key);
-		}
-		else
-		{
-			$keyres = openssl_get_publickey($_SERVER["SSL_CLIENT_CERT"]);
-			if($keyres === FALSE){
-				error_log("getCertId: no public key retrieved", 0);
-				error_log("getCertId: cert is as follows", 0);
-				error_log($_SERVER["SSL_CLIENT_CERT"], 0);
-				$string = str_replace(array("\r", "\n","\t"), '', $_SERVER["SSL_CLIENT_CERT"]);
-				error_log($string,0);
-				return NULL;
-			}
-			$key = openssl_pkey_get_details($keyres)['key'];
-			if(!$key){
-				error_log("getCertId: no hash key retrieved", 0);
-				return NULL;
-			}	
-		}
-    }
-	return sha1($key);
+	return sha1($_SERVER["SSL_CLIENT_CERT"]);
 }
 //Decides if a device is a temporary device or not, returning expiration date if so
 function isTemporary($certid){

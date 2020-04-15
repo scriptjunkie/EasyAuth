@@ -99,12 +99,6 @@ function issueCert($username, $key){
 	//Now sign the file 
 	$command = 'openssl ca -config "' . $confpath . '" -days ' . $days . ' -notext -batch -spkac "' . $uniqpath . '.spkac" -out "' . $uniqpath . '.out"';
 	shell_exec($command);
-	$data = file_get_contents($uniqpath . ".out");
-	$bdata = base64_encode($data);
-	//Enable below to test direct download
-	/*
-	file_put_contents("../test.html",'<html><head></head><body><a href="data:application/x-x509-user-cert;base64,'.$bdata.'"" download="test.crt">Save certificate</a></body></html>');
-	*/
 	//And send it back to the user
 	$length = filesize($uniqpath . ".out");
 	header('Last-Modified: ' . date('r+b'));
